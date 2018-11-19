@@ -1,5 +1,6 @@
 package com.crimbear.voi.sabianmcelroy.catanchornews;
 
+import android.content.Context;
 import android.media.Image;
 import android.widget.ImageView;
 

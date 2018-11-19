@@ -1,6 +1,8 @@
 package com.crimbear.voi.sabianmcelroy.catanchornews;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.StrictMode;
@@ -17,6 +19,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     TextView tvHelloWorld;
@@ -72,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //todo: notify main thread when branch has image
-                        //thread = new IVThread(ivPicture,);
+                        thread = new IVThread(ivPicture,MainActivity.this);
                         thread.start();
 
 
@@ -103,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO: Implement Flickr API Here
 
+
+
         ivPicture.setImageDrawable(drawable);
     }
 
@@ -111,8 +117,28 @@ public class MainActivity extends AppCompatActivity {
         //Intent n = new Intent()
     }
 
-    public void OnImageFound(Drawable drawable) {
-        if(drawable != null)
-        ivPicture.setImageDrawable(drawable);
+    public void OnImageFound(InputStream is) {
+            Log.e("EFG","HIJKL");
+        /*try {
+            thread.join();
+            Log.e("JOINED","TRUE");
+        } catch (InterruptedException e) {
+            Log.e("IExc","ONIMFSTREAM");
+            e.printStackTrace();
+        }*/
+        Drawable drawable = Drawable.createFromStream(is,null);
+        if(drawable != null) {
+
+            BitmapDrawable bmpD = (BitmapDrawable)drawable;
+
+
+            int pixWidth=this.getWindowManager().getDefaultDisplay().getWidth(),pixHeight=this.getWindowManager().getDefaultDisplay().getWidth();
+            int dpw =pixWidth/(int)getResources().getDisplayMetrics().density , dph=pixHeight/(int)getResources().getDisplayMetrics().density ;
+
+            Bitmap resized = Bitmap.createScaledBitmap(bmpD.getBitmap(), pixWidth, pixHeight, true);
+
+            ivPicture.setImageBitmap(resized);
+            Log.e("ImageSet", "T");
+        }
     }
 }

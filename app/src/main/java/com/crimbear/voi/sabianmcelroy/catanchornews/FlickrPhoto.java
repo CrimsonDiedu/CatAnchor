@@ -36,7 +36,7 @@ public class FlickrPhoto{
         }
 
     }
-    public static Drawable LoadImageFromWebOperations(String path, ImageView destination) {
+    public static InputStream LoadImageFromWebOperations(String path, ImageView destination) {
 
         try {
             URI uri = new URI(path);
@@ -46,12 +46,9 @@ public class FlickrPhoto{
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
             Log.e("MM ","is.getClass().getName()");
             InputStream is = (InputStream) connection.getInputStream();
+            return is;
 
 
-            Log.e("DEWAE ","is.getClass().getName()");
-
-
-            return Drawable.createFromStream(is,null);
         } catch (Exception e) {
             Log.e("Badti(me).victim = me",e.getMessage()+" sad");
             e.printStackTrace();
