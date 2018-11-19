@@ -6,6 +6,8 @@ import android.widget.ImageView;
 
 public class IVThread extends Thread {
     ImageView ivPicture;
+    public FlickrPhoto photoRef;
+    public String path;
     MainActivity parent;
     public IVThread(ImageView ivp, MainActivity parent){
         ivPicture = ivp;
@@ -14,6 +16,9 @@ public class IVThread extends Thread {
     @Override
     public void run() {
         super.run();
-        parent.OnImageFound(FlickrPhoto.LoadImageFromWebOperations("https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg",ivPicture));
+        if(photoRef != null)
+            parent.OnImageFound(photoRef.LoadImageFromWebOperations());
+        else
+            parent.OnImageFound(FlickrPhoto.LoadStaticImageFromWebOperations(path));
     }
 }

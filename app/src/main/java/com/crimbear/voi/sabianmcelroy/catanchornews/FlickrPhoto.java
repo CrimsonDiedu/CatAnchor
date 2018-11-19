@@ -13,17 +13,17 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
+
 /*
-* https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg
-*
+        https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg
 
 farm-id: 1
 server-id: 2
 photo-id: 1418878
 secret: 1e92283336
 size: m
-*
-*/
+url = "https://farm"+farm_id+"staticflickr.com/"+server_id+'/'+photo_id+'_'+secret+'_'+size+".jpg";
+         */
 public class FlickrPhoto{
     String url,secret,imSize;
     int farm_id,server_id;
@@ -34,15 +34,29 @@ public class FlickrPhoto{
         for(int i = 0; i < read.length(); i++){
             data+=read.charAt(i);
         }
-
     }
-    public static InputStream LoadImageFromWebOperations(String path, ImageView destination) {
+    public FlickrPhoto(String secret, char size,
+                       int farm_id, int server_id, String photo_id)
+    {
+        this.secret = secret;
+        this.imSize = imSize;
+        this.farm_id = farm_id;
+        this.server_id = server_id;
+        url = "https://farm"+farm_id+".staticflickr.com/"+server_id+'/'+photo_id+'_'+secret+'_'+size+".jpg";
+    }
+
+    public InputStream LoadImageFromWebOperations() {
+        return LoadStaticImageFromWebOperations(url);
+    }
+    public static InputStream LoadStaticImageFromWebOperations(String path) {
 
         try {
+            //Log.e("CREATing url","path: "+path);
+
             URI uri = new URI(path);
             URL url = uri.toURL();
 
-            Log.e("URL CREATED ",path+'\n'+url.getHost()+'\n'+url.getUserInfo()+'\n'+url.getAuthority()+'\n'+url.getProtocol()+'\n'+url.getRef());
+            //Log.e("URL CREATED ",path+'\n'+url.getHost()+'\n'+url.getUserInfo()+'\n'+url.getAuthority()+'\n'+url.getProtocol()+'\n'+url.getRef());
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
             Log.e("MM ","is.getClass().getName()");
             InputStream is = (InputStream) connection.getInputStream();
