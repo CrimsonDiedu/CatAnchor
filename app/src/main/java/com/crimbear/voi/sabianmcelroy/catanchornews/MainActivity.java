@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
         requestQueue.add(jsonObjectRequest);
         */
-        //endregion
-        String tags = "Cat", src = "associated-press", newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&apiKey=20691eacad374052a07ee662dd9bd63a",
+        /*
+        String tags = "Cat", src = "associated-press",
                 url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2f0b4021021997cc3a82a0aeed6a700d&text=" + tags + "&per_page=10&format=json&nojsoncallback=1";//"http://www.google.com";
 
 // Request a string response from the provided URL.
@@ -101,8 +101,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 // Add the request to the RequestQueue.
-        requestQueue.add(stringRequest);
-        NewsStory();
+        requestQueue.add(stringRequest);*/
+
+        //endregion
+        RetrieveNewsStory();
 
     }
 
@@ -182,21 +184,21 @@ public class MainActivity extends AppCompatActivity {
 
         ivPicture.setImageDrawable(drawable);
     }
-    public void NewsStory(View v){
+    public void NextArticle(View v){
         pageIndex++;
-        NewsStory();
+        RetrieveNewsStory();
     }
-    public void ChangeSource(View v){
+    public void NextSource(View v){
         pageIndex = 0;
         srcIndex++;
-        NewsStory();
+        RetrieveNewsStory();
     }
-    public void UpdateStream(InputStream is){
+    public void UpdateFromStream(InputStream is){
         Drawable d = Drawable.createFromStream(is,null);
         ivPicture.setImageDrawable(d);
     }
 
-    public void NewsStory() {
+    public void RetrieveNewsStory() {
         final Context context = this;
         //TODO: Open a new page that contains the news story and the picture selected
         //Intent n = new Intent()
@@ -244,7 +246,8 @@ public class MainActivity extends AppCompatActivity {
                             //tvHelloWorld.setText(response);
                             tvSiteTitle.setText("Title: "+ results.articles[i].title+"\nSource: "+results.articles[i].source.name);
                             tvSiteDescription.setText(results.articles[i].description);
-                            ((MainActivity)context).UpdateStream(FlickrPhoto.LoadStaticImageFromWebOperations(results.articles[i].urlToImage));
+
+                            ((MainActivity)context).UpdateFromStream(FlickrPhoto.LoadStaticImageFromWebOperations(results.articles[i].urlToImage));
                             Log.e("Original Image",results.articles[i].urlToImage+ " ");
                             Log.e("Article Page",results.articles[i].url + " ");
 
