@@ -2,23 +2,34 @@ package com.crimbear.voi.sabianmcelroy.catanchornews;
 
 import android.content.Context;
 import android.media.Image;
+import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.InputStream;
+
 public class IVThread extends Thread {
-    ImageView ivPicture;
-    public FlickrPhoto photoRef;
-    public String path;
-    MainActivity parent;
-    public IVThread(ImageView ivp, MainActivity parent){
-        ivPicture = ivp;
-        this.parent = parent;
-    }
+        public FlickrPhoto photoRef;
+        public String path;
+        InputStream is;
+        MainActivity parent;
+        public IVThread(MainActivity parent){
+            this.parent = parent;
+        }
     @Override
     public void run() {
         super.run();
-        if(photoRef != null)
-            parent.OnImageFound(photoRef.LoadImageFromWebOperations());
-        else
-            parent.OnImageFound(FlickrPhoto.LoadStaticImageFromWebOperations(path));
+        int i;
+            try{
+            if (photoRef != null) {
+                is = photoRef.LoadImageFromWebOperations();
+                parent.OnImageFound();
+            } else if (path != null && path != "")
+                is = FlickrPhoto.LoadStaticImageFromWebOperations(path);
+            parent.OnImageFound();
+        }
+        catch(InterruptedException ie)
+        {
+
+        }
     }
 }

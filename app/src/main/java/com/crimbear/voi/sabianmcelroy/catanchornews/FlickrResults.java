@@ -10,6 +10,8 @@ public class FlickrResults {
     public Photos photos;
 
     public Photos.Photo getPhoto(int i){
+        Log.e("JIf",photos.photo.length+"");
+
         return photos.photo[i];
     }
 

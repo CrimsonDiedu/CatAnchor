@@ -22,6 +22,8 @@ server-id: 2
 photo-id: 1418878
 secret: 1e92283336
 size: m
+        https://farm5.staticflickr.com/4901/31019866107_7245bed2dd77c8dc.jpg
+url = https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
 url = "https://farm"+farm_id+"staticflickr.com/"+server_id+'/'+photo_id+'_'+secret+'_'+size+".jpg";
          */
 public class FlickrPhoto{
@@ -42,15 +44,18 @@ public class FlickrPhoto{
         this.imSize = imSize;
         this.farm_id = farm_id;
         this.server_id = server_id;
-        url = "https://farm"+farm_id+".staticflickr.com/"+server_id+'/'+photo_id+'_'+secret+'_'+size+".jpg";
+        url = "https://farm"+farm_id+".staticflickr.com/"+server_id+'/'+photo_id+'_'+secret+".jpg";
     }
 
     public InputStream LoadImageFromWebOperations() {
         return LoadStaticImageFromWebOperations(url);
     }
     public static InputStream LoadStaticImageFromWebOperations(String path) {
-
-        try {
+        if(path == null){
+            Log.e("NOPATH","Missing path statement");
+            return null;
+        }
+        try {//https://farm5.staticflickr.com/4901/31019866107_7245bed2dd77c8dc.jpg
             //Log.e("CREATing url","path: "+path);
 
             URI uri = new URI(path);
@@ -58,13 +63,13 @@ public class FlickrPhoto{
 
             //Log.e("URL CREATED ",path+'\n'+url.getHost()+'\n'+url.getUserInfo()+'\n'+url.getAuthority()+'\n'+url.getProtocol()+'\n'+url.getRef());
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            Log.e("MM ","is.getClass().getName()");
+            //Log.e("MM ","is.getClass().getName()");
             InputStream is = (InputStream) connection.getInputStream();
             return is;
 
 
         } catch (Exception e) {
-            Log.e("Badti(me).victim = me",e.getMessage()+" sad");
+            //Log.e("Badti(me).victim = me",e.getMessage()+" sad");
             e.printStackTrace();
             return null;
         }

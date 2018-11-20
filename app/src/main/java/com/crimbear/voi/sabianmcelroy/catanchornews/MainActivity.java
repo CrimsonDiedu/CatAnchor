@@ -4,11 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +28,7 @@ import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     TextView tvHelloWorld,tvSiteDescription,tvSiteTitle;
+    EditText etSearchTag;
     ImageView ivPicture;
     IVThread thread;
     RequestQueue requestQueue;
@@ -33,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
             imageIndex = pageIndex = 0,srcIndex = 0;
     String[] srcs = ("abc-news,mashable,bbc-news,buzzfeed,cbs-news,crypto-coins-news").split(",");
 
+    void InitIVThread(){
+        thread = new IVThread( MainActivity.this);
+        thread.start();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         tvHelloWorld        = findViewById(R.id.tvSiteDescription);
         tvSiteTitle         = findViewById(R.id.tvSiteTitle);
         tvSiteDescription   = findViewById(R.id.tvSiteDescription);
-
+        etSearchTag         = findViewById(R.id.etSearchTag);
         final Context context = this;
         String flickrURL = "https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg";//"https://api.flickr.com/services/rest/?method=flickr.test.echo&name=value";
         requestQueue = Volley.newRequestQueue(this);
@@ -79,19 +86,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
-                        Log.e("onResponse", response.toString());
+                        //Log.e("onResponse", response.toString());
                         //tvHelloWorld.setText(response);
 
                         //todo: notify main thread when branch has image
-                        thread = new IVThread(ivPicture, MainActivity.this);
-                        thread.start();
-
-
-                        try {
-                            thread.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        InitIVThread();
 
                     }
                 }, new Response.ErrorListener() {
@@ -115,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         //TODO: Implement Flickr API Here
-        String  tags = "cat",
-                flickrUrl = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2f0b4021021997cc3a82a0aeed6a700d&text=" + tags + "&per_page=5&format=json&nojsoncallback=1";
+        final String  tags = etSearchTag.getText().toString(),
+                flickrUrl = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2f0b4021021997cc3a82a0aeed6a700d&text=" + tags + "&per_page=10&format=json&nojsoncallback=1";
         imageIndex++;
         {
 
@@ -151,21 +150,21 @@ public class MainActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             // Display the first 500 characters of the response string.
                             // Log.e("onResponse", response.toString());
-                            Log.e("ONR","RWE");
                             Gson g = new Gson();
                             FlickrResults results = g.fromJson(response,FlickrResults.class);
-                            Log.e("ONrewR","RWewE");
                             //tvHelloWorld.setText(response);
                             //
-                            FlickrResults.Photos.Photo photo = results.getPhoto(imageIndex%results.photos.photo.length);
-                            Log.e("OqweNR","RWE");
-                            FlickrPhoto flickrPhoto = new FlickrPhoto("7245bed2dd77c8dc",'m',photo.farm,photo.server, photo.id);
+                            int i = imageIndex%results.photos.photo.length;
+                            FlickrResults.Photos.Photo photo = results.getPhoto(i);
+                            //Log.e("Image Index",i+"");
+                            FlickrPhoto flickrPhoto = new FlickrPhoto(photo.secret,'m',photo.farm,photo.server, photo.id);
                                     /*
     public FlickrPhoto(String secret, char size,
                        int farm_id, int server_id, int photo_id)
                                      */
 
-                            Log.e("ONrewqfR",flickrPhoto.url);
+                            Log.e("Image URL",flickrPhoto.url);
+                            InitIVThread();
                             thread.path = flickrPhoto.url;
                             thread.photoRef = flickrPhoto;
                             thread.start();
@@ -188,9 +187,15 @@ public class MainActivity extends AppCompatActivity {
         NewsStory();
     }
     public void ChangeSource(View v){
+        pageIndex = 0;
         srcIndex++;
         NewsStory();
     }
+    public void UpdateStream(InputStream is){
+        Drawable d = Drawable.createFromStream(is,null);
+        ivPicture.setImageDrawable(d);
+    }
+
     public void NewsStory() {
         final Context context = this;
         //TODO: Open a new page that contains the news story and the picture selected
@@ -239,6 +244,10 @@ public class MainActivity extends AppCompatActivity {
                             //tvHelloWorld.setText(response);
                             tvSiteTitle.setText("Title: "+ results.articles[i].title+"\nSource: "+results.articles[i].source.name);
                             tvSiteDescription.setText(results.articles[i].description);
+                            ((MainActivity)context).UpdateStream(FlickrPhoto.LoadStaticImageFromWebOperations(results.articles[i].urlToImage));
+                            Log.e("Original Image",results.articles[i].urlToImage+ " ");
+                            Log.e("Article Page",results.articles[i].url + " ");
+
                             //tvHelloWorld.setText("Source\n\n"+results.articles[0].source.name);
 
                         }
@@ -258,20 +267,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void OnImageFound(InputStream is) {
-        Log.e("OnImagefound","Enter");
-        /*
-            Log.e("EFG","HIJKL");
-        try {
-            thread.join();
-            Log.e("JOINED","TRUE");
-        } catch (InterruptedException e) {
-            Log.e("IExc","ONIMFSTREAM");
-            e.printStackTrace();
-        }*/
+    public void OnImageFound() throws InterruptedException {
+        Log.e("Merging threads","....");
+        InputStream is = thread.is;
+
+
         if(is == null)return;
+        //Log.e("ImageSetStr",is.toString());
         Drawable drawable = Drawable.createFromStream(is,null);
-        if(drawable != null) {
+        if(thread.path != null)
+        return;
+        ivPicture.setImageDrawable(drawable);
+        if(drawable != null&& thread.path==null) {
 
             BitmapDrawable bmpD = (BitmapDrawable)drawable;
 
@@ -281,7 +288,10 @@ public class MainActivity extends AppCompatActivity {
 
             Bitmap resized = Bitmap.createScaledBitmap(bmpD.getBitmap(), pixWidth, pixHeight, true);
 
+
+            //ivPicture.setImageDrawable(bmpD);
             ivPicture.setImageBitmap(resized);
+
             Log.e("ImageSet", "T");
         }
     }
