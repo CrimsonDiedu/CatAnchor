@@ -1,6 +1,7 @@
 package com.crimbear.voi.sabianmcelroy.catanchornews;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -8,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,17 +23,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
-    TextView tvHelloWorld,tvSiteDescription,tvSiteTitle;
+    int numFragments = 4;
+    TextView tvSourceName;
     EditText etSearchTag;
     ImageView ivPicture;
     IVThread thread;
+    CardView cvArticleLayout;
     RequestQueue requestQueue;
+    FragmentArticle curFrag;
+    FragmentArticle[] fragments;
+
     int pageIndex,
             imageIndex = pageIndex = 0,srcIndex = 0;
     String[] srcs = ("abc-news,mashable,bbc-news,buzzfeed,cbs-news,crypto-coins-news").split(",");
@@ -40,16 +48,18 @@ public class MainActivity extends AppCompatActivity {
         thread = new IVThread( MainActivity.this);
         thread.start();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        fragments = new FragmentArticle[numFragments];
+        fragments[0] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt);
+        fragments[1] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt2);
+        fragments[2] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt3);
+        fragments[3] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt4);
+        tvSourceName = findViewById(R.id.tvSourceName);
 
-        ivPicture           = findViewById(R.id.ivPicture);
-        tvHelloWorld        = findViewById(R.id.tvSiteDescription);
-        tvSiteTitle         = findViewById(R.id.tvSiteTitle);
-        tvSiteDescription   = findViewById(R.id.tvSiteDescription);
-        etSearchTag         = findViewById(R.id.etSearchTag);
         final Context context = this;
         String flickrURL = "https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg";//"https://api.flickr.com/services/rest/?method=flickr.test.echo&name=value";
         requestQueue = Volley.newRequestQueue(this);
@@ -104,7 +114,10 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);*/
 
         //endregion
+
+
         RetrieveNewsStory();
+
 
     }
 
@@ -166,10 +179,9 @@ public class MainActivity extends AppCompatActivity {
                                      */
 
                             Log.e("Image URL",flickrPhoto.url);
-                            InitIVThread();
+                            //InitIVThread();
                             thread.path = flickrPhoto.url;
                             thread.photoRef = flickrPhoto;
-                            thread.start();
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -184,91 +196,91 @@ public class MainActivity extends AppCompatActivity {
 
         ivPicture.setImageDrawable(drawable);
     }
+
     public void NextArticle(View v){
-        pageIndex++;
+        NextArticle();
+    }
+    public void NextArticle(){
+        pageIndex+=4;
         RetrieveNewsStory();
     }
+
     public void NextSource(View v){
         pageIndex = 0;
         srcIndex++;
         RetrieveNewsStory();
     }
-    public void UpdateFromStream(InputStream is){
-        Drawable d = Drawable.createFromStream(is,null);
-        ivPicture.setImageDrawable(d);
-    }
+
 
     public void RetrieveNewsStory() {
         final Context context = this;
         //TODO: Open a new page that contains the news story and the picture selected
         //Intent n = new Intent()
         int srcList = srcIndex % srcs.length;
-        String src = srcs[srcList],
-                newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults=3&apiKey=20691eacad374052a07ee662dd9bd63a";
+        for (int ind = 0; ind < numFragments; ind++) {
+            String src = srcs[srcList],
+                    newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults=3&apiKey=20691eacad374052a07ee662dd9bd63a";
+
 //region request
-        {
-
-//region no
-        /*
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-            Request.Method.GET,
-            flickrURL,
-            null,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.e("REST RESPONSE ",response.toString());
-                }
-            },
-            new Response.ErrorListener()
             {
-                @Override
-                public void onErrorResponse(VolleyError error){
-                    Log.e("ERROR REST RESPONSE ",error.toString() );
-                }
-            }
-            );
 
-        requestQueue.add(jsonObjectRequest);
-        */
-            //endregion
 // Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, newsurl,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            // Display the first 500 characters of the response string.
-                            // Log.e("onResponse", response.toString());
-                            Gson g = new Gson();
-                            NewsResults results = g.fromJson(response,NewsResults.class);
-                            JSONArray  jsonArray= new JSONArray();
-                            int i = pageIndex%results.articles.length;
-                            //tvHelloWorld.setText(response);
-                            tvSiteTitle.setText("Title: "+ results.articles[i].title+"\nSource: "+results.articles[i].source.name);
-                            tvSiteDescription.setText(results.articles[i].description);
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, newsurl,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // Display the first 500 characters of the response string.
+                                // Log.e("onResponse", response.toString());
+                                Gson g = new Gson();
+                                NewsResults results = g.fromJson(response, NewsResults.class);
+                                JSONArray jsonArray = new JSONArray();
+                                    for(int ind = 0; ind < numFragments; ind++) {
+                                        curFrag = fragments[ind + (pageIndex % 4)];
 
-                            ((MainActivity)context).UpdateFromStream(FlickrPhoto.LoadStaticImageFromWebOperations(results.articles[i].urlToImage));
-                            Log.e("Original Image",results.articles[i].urlToImage+ " ");
-                            Log.e("Article Page",results.articles[i].url + " ");
+                                        int i = pageIndex % results.articles.length + ind;
 
-                            //tvHelloWorld.setText("Source\n\n"+results.articles[0].source.name);
+                                        curFrag.tvFragTitle.setText("Title: " + results.articles[i].title + "\nSource: " + results.articles[i].source.name);
+                                        curFrag.tvFragDescription.setText(results.articles[i].description);
+                                        curFrag.article = results.articles[i];
+                                        tvSourceName.setText("Source: "+results.articles[i].source.name);
+                                        LoadImageFromURL(results.articles[i].urlToImage, curFrag.ivFragImage);
+                                        Log.e("Original Image", results.articles[i].urlToImage + " ");
+                                        Log.e("Article Page", results.articles[i].url + " ");
 
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("onErrorResponse ", "That didn't work!");
-                }
-            });
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("onErrorResponse ", "That didn't work!");
+                    }
+                });
 
-// Add the request to the RequestQueue.
-            requestQueue.add(stringRequest);
-        }
+                // Add the request to the RequestQueue.
+                requestQueue.add(stringRequest);
+            }
 
 //endregion
+        }
     }
 
+    public void LoadImageFromURL(String url, ImageView imageView){
+        Picasso.with(this)
+                .load(url)
+                .placeholder(R.drawable.rounded_button)
+                .error(R.drawable.rounded_button)
+                .into(imageView, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
 
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+    }
 
     public void OnImageFound() throws InterruptedException {
         Log.e("Merging threads","....");
@@ -287,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             int pixWidth=this.getWindowManager().getDefaultDisplay().getWidth(),pixHeight=this.getWindowManager().getDefaultDisplay().getWidth();
-            int dpw =pixWidth/(int)getResources().getDisplayMetrics().density , dph=pixHeight/(int)getResources().getDisplayMetrics().density ;
+            int dpw = pixWidth/(int)getResources().getDisplayMetrics().density , dph=pixHeight/(int)getResources().getDisplayMetrics().density ;
 
             Bitmap resized = Bitmap.createScaledBitmap(bmpD.getBitmap(), pixWidth, pixHeight, true);
 
@@ -297,5 +309,14 @@ public class MainActivity extends AppCompatActivity {
 
             Log.e("ImageSet", "T");
         }
+    }
+
+    public void ToArticle(View v){
+        Intent n = new Intent(this,ViewArticleActivity.class);
+        startActivity(n);
+    }
+    public void ToSettings(View v){
+        Intent n = new Intent(this,SettingsActivity.class);
+        startActivity(n);
     }
 }

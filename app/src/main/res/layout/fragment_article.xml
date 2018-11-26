@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/CardView"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardElevation="14dp"
+    >
+    
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorMonoDetailAlt">
+
+        <ImageView
+            android:id="@+id/ivFragImage"
+            android:layout_width="match_parent"
+            android:layout_height="238dp"
+            android:layout_weight="1"
+            android:background="@drawable/maxresdefault"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/tvFragTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kitty"
+            android:textColor="#550000"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvFragDescritpion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="KittyScreamsInHorror"
+            android:textColor="#550000"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

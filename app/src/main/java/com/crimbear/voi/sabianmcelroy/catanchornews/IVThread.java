@@ -2,6 +2,7 @@ package com.crimbear.voi.sabianmcelroy.catanchornews;
 
 import android.content.Context;
 import android.media.Image;
+import android.util.EventLog;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -15,6 +16,7 @@ public class IVThread extends Thread {
         public IVThread(MainActivity parent){
             this.parent = parent;
         }
+        public EventLog.Event event;
     @Override
     public void run() {
         super.run();

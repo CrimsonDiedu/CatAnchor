@@ -55,6 +55,7 @@ public class FlickrPhoto{
             Log.e("NOPATH","Missing path statement");
             return null;
         }
+        Log.e("Loading from: ",path);
         try {//https://farm5.staticflickr.com/4901/31019866107_7245bed2dd77c8dc.jpg
             //Log.e("CREATing url","path: "+path);
 
