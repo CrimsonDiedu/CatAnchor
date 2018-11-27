@@ -1,155 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rlytParent"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="@color/colorMonoDetail"
+        >
+
+        <SearchView
+            android:id="@+id/sbArticles"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:layout_scrollFlags="scroll|enterAlways
+"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            >
+
+            <ImageButton
+                android:id="@+id/btnSettings"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_button"
+                android:elevation="10dp"
+                android:hapticFeedbackEnabled="true"
+                android:onClick="ToSettings"
+                android:scaleType="fitCenter"
+                android:src="@drawable/settings_icon"
+                android:text="Button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btnSearch"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_button"
+                android:elevation="10dp"
+                android:hapticFeedbackEnabled="true"
+                android:onClick="NextArticle"
+                android:scaleType="fitCenter"
+                android:src="@drawable/search_icon"
+                android:text="Button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnSettings3"
+                app:layout_constraintStart_toEndOf="@+id/btnSettings"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btnSettings3"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_button"
+                android:elevation="10dp"
+                android:hapticFeedbackEnabled="true"
+                android:onClick="NextSource"
+                android:scaleType="fitCenter"
+                android:src="@drawable/change_source"
+                android:text="Button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorMonoDetail"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-        <ImageButton
-            android:id="@+id/btnSettings"
-            android:layout_width="90dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/rounded_button"
-            android:elevation="10dp"
-            android:hapticFeedbackEnabled="true"
-            android:onClick="ToSettings"
-            android:scaleType="fitCenter"
-            android:src="@drawable/settings_icon"
-            android:text="Button" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MainActivity">
 
-        <ImageButton
-            android:id="@+id/btnSearch"
-            android:layout_width="90dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="140dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/rounded_button"
-            android:elevation="10dp"
-            android:hapticFeedbackEnabled="true"
-            android:onClick="NextArticle"
-            android:scaleType="fitCenter"
-            android:src="@drawable/search_icon"
-            android:text="Button" />
-
-        <ImageButton
-            android:id="@+id/btnSettings3"
-            android:layout_width="90dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="270dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/rounded_button"
-            android:elevation="10dp"
-            android:hapticFeedbackEnabled="true"
-            android:onClick="NextSource"
-            android:scaleType="fitCenter"
-            android:src="@drawable/change_source"
-            android:text="Button" />
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="60dp"
-            android:background="@color/colorMonoDark">
-
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/rlytParent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:background="@color/colorMonoDetail"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/tvSourceName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Source: "
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
 
-                <fragment
-                    android:id="@+id/fgmt"
-                    android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+
+                <ScrollView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="32dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout="@layout/fragment_article" />
+                    android:layout_alignParentTop="true"
+                    android:background="@color/colorMonoDark">
 
-                <fragment
-                    android:id="@+id/fgmt2"
-                    android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="32dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout="@layout/fragment_article" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                <fragment
-                    android:id="@+id/fgmt3"
-                    android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="32dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout="@layout/fragment_article" />
+                        <TextView
+                            android:id="@+id/tvSourceName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Source: "
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
 
-                <fragment
-                    android:id="@+id/fgmt4"
-                    android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="32dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout="@layout/fragment_article" />
-            </LinearLayout>
-        </ScrollView>
+                        <fragment
+                            android:id="@+id/fgmt"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt2"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt3"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt4"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+                    </LinearLayout>
+                </ScrollView>
 
 
-    </RelativeLayout>
+            </RelativeLayout>
 
-</android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>
