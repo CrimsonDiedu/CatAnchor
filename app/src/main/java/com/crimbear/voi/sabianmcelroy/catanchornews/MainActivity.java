@@ -1,11 +1,13 @@
 package com.crimbear.voi.sabianmcelroy.catanchornews;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,9 +62,18 @@ public class MainActivity extends AppCompatActivity {
         fragments[3] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt4);
         tvSourceName = findViewById(R.id.tvSourceName);
 
-        final Context context = this;
-        String flickrURL = "https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg";//"https://api.flickr.com/services/rest/?method=flickr.test.echo&name=value";
-        requestQueue = Volley.newRequestQueue(this);
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        if(connected)
+        {
+            final Context context = this;
+            String flickrURL = "https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg";//"https://api.flickr.com/services/rest/?method=flickr.test.echo&name=value";
+            requestQueue = Volley.newRequestQueue(this);
 //region no
         /*
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -113,12 +124,17 @@ public class MainActivity extends AppCompatActivity {
 // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);*/
 
-        //endregion
+            //endregion
 
 
-        RetrieveNewsStory();
+            RetrieveNewsStory();
 
+        }
+        else{
 
+            finish();
+            System.exit(0);
+        }
     }
 
     public void CatPicture(View v) {
