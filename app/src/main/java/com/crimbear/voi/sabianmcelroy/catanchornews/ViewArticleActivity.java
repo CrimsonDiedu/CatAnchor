@@ -1,5 +1,6 @@
 package com.crimbear.voi.sabianmcelroy.catanchornews;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -18,7 +19,7 @@ public class ViewArticleActivity extends AppCompatActivity {
     */
     //article.source.id,article.source.name,article.author,article.title,article.description,article.url,article.urlToImage,article.publishedAt,article.content
     Article article;
-
+    SharedPreferences preferences;
     TextView tvContent,tvAuthor,tvTitle;
     ImageView ivArticleImage;
     public Article getArticle() {
@@ -37,24 +38,32 @@ public class ViewArticleActivity extends AppCompatActivity {
         tvTitle = findViewById(R.id.tvTitle);
         ivArticleImage = findViewById(R.id.ivArticleImage);
 
-        tvContent.setText("\t\t   "+article.content);
+        tvContent.setText("\t\t   " + article.content);
         tvAuthor.setText("Article By " + article.author);
         tvTitle.setText(article.title);
-        Picasso.with(this)
-                .load(article.urlToImage)
-                .placeholder(R.drawable.rounded_button)
-                .error(R.drawable.rounded_button)
-                .into(ivArticleImage, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
+        preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
+        if(preferences.getBoolean("LoadImageFromArticle",true)) {
+            Picasso.with(this)
+                    .load(article.urlToImage)
+                    .placeholder(R.drawable.rounded_button)
+                    .error(R.drawable.rounded_button)
+                    .into(ivArticleImage, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
 
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
                     }
+            );
 
-                    @Override
-                    public void onError() {
+        }
+        else{
 
-                    }
-                });
-
+        }
     }
 }
+

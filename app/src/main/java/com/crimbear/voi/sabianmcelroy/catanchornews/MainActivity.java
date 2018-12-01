@@ -3,6 +3,7 @@ package com.crimbear.voi.sabianmcelroy.catanchornews;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -41,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     FragmentArticle curFrag;
     FragmentArticle[] fragments;
+    SharedPreferences preferences;
 
-    int pageIndex,
+    int pageIndex,pages=0,
             imageIndex = pageIndex = 0,srcIndex = 0;
     String[] srcs = ("abc-news,mashable,bbc-news,buzzfeed,cbs-news,crypto-coins-news").split(",");
 
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         fragments[2] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt3);
         fragments[3] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt4);
         tvSourceName = findViewById(R.id.tvSourceName);
+        preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
 
         boolean connected = false;
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -145,8 +148,9 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         //TODO: Implement Flickr API Here
-        final String  tags = etSearchTag.getText().toString(),
-                flickrUrl = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2f0b4021021997cc3a82a0aeed6a700d&text=" + tags + "&per_page=10&format=json&nojsoncallback=1";
+        //final String  tags = etSearchTag.getText().toString(),
+
+        final String tags = preferences.getString("Tags","Cats"),flickrUrl = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2f0b4021021997cc3a82a0aeed6a700d&text=" + tags + "&per_page=10&page="+pages+"&format=json&nojsoncallback=1";
         imageIndex++;
         {
 
@@ -184,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
                             Gson g = new Gson();
                             FlickrResults results = g.fromJson(response,FlickrResults.class);
                             //tvHelloWorld.setText(response);
-                            //
                             int i = imageIndex%results.photos.photo.length;
                             FlickrResults.Photos.Photo photo = results.getPhoto(i);
                             //Log.e("Image Index",i+"");
@@ -193,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
     public FlickrPhoto(String secret, char size,
                        int farm_id, int server_id, int photo_id)
                                      */
-
                             Log.e("Image URL",flickrPhoto.url);
                             //InitIVThread();
                             thread.path = flickrPhoto.url;
@@ -233,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO: Open a new page that contains the news story and the picture selected
         //Intent n = new Intent()
         int srcList = srcIndex % srcs.length;
-        for (int ind = 0; ind < numFragments; ind++) {
             String src = srcs[srcList],
                     newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults=3&apiKey=20691eacad374052a07ee662dd9bd63a";
 
@@ -253,15 +254,15 @@ public class MainActivity extends AppCompatActivity {
                                     for(int ind = 0; ind < numFragments; ind++) {
                                         curFrag = fragments[ind + (pageIndex % 4)];
 
-                                        int i = pageIndex % results.articles.length + ind;
+                                        int i = (pageIndex+ind) % results.articles.length;
 
                                         curFrag.tvFragTitle.setText("Title: " + results.articles[i].title + "\nSource: " + results.articles[i].source.name);
                                         curFrag.tvFragDescription.setText(results.articles[i].description);
                                         curFrag.article = results.articles[i];
                                         tvSourceName.setText("Source: "+results.articles[i].source.name);
                                         LoadImageFromURL(results.articles[i].urlToImage, curFrag.ivFragImage);
-                                        Log.e("Original Image", results.articles[i].urlToImage + " ");
-                                        Log.e("Article Page", results.articles[i].url + " ");
+                                        //Log.e("Original Image", results.articles[i].urlToImage + " ");
+                                        Log.e("Article Page", results.articles[i].url + "\n");
 
                                 }
                             }
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
 //endregion
-        }
+
     }
 
     public void LoadImageFromURL(String url, ImageView imageView){

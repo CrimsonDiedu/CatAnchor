@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/CardView"
+    android:id="@+id/cvArticle"
     android:layout_margin="5dp"
     card_view:cardCornerRadius="4dp"
     card_view:cardElevation="14dp"
