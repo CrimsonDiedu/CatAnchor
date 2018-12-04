@@ -13,15 +13,30 @@
         android:background="@color/colorMonoDetail"
         >
 
-        <SearchView
-            android:id="@+id/sbArticles"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:layout_scrollFlags="scroll|enterAlways"
+            android:orientation="horizontal">
 
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <SearchView
+                android:id="@+id/sbArticles"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_scrollFlags="scroll|enterAlways"
+
+                android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            </SearchView>
+        </LinearLayout>
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -60,9 +75,9 @@
                 android:background="@drawable/rounded_button"
                 android:elevation="10dp"
                 android:hapticFeedbackEnabled="true"
-                android:onClick="NextArticle"
+                android:onClick="ToFlickrSettings"
                 android:scaleType="fitCenter"
-                android:src="@drawable/search_icon"
+                android:src="@drawable/flickr_logo"
                 android:text="Button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnSettings3"
@@ -136,6 +151,14 @@
                             android:textColor="@android:color/white"
                             android:textStyle="bold" />
 
+                        <Button
+                            android:id="@+id/btnLastPage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="LastArticle"
+                            android:text="Go to"
+                            android:visibility="invisible" />
+
                         <fragment
                             android:id="@+id/fgmt"
                             android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
@@ -201,6 +224,109 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt5"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt6"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt7"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt8"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt9"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <fragment
+                            android:id="@+id/fgmt10"
+                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="32dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout="@layout/fragment_article" />
+
+                        <Button
+                            android:id="@+id/btnNextPage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="NextArticle"
+                            android:text="Load More Articles." />
                     </LinearLayout>
                 </ScrollView>
 

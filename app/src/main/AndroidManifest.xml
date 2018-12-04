@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".ViewArticleActivity"></activity>
+        <activity android:name=".ViewArticleActivity" />
+        <activity android:name=".FlickrSettings"></activity>
     </application>
 
 </manifest>

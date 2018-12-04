@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ import org.json.JSONArray;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
-    int numFragments = 4;
+    int numFragments = 10;
     TextView tvSourceName;
     EditText etSearchTag;
     ImageView ivPicture;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentArticle curFrag;
     FragmentArticle[] fragments;
     SharedPreferences preferences;
+    Button btnNextPage,btnLastPage;
 
     int pageIndex,pages=0,
             imageIndex = pageIndex = 0,srcIndex = 0;
@@ -58,12 +60,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragments = new FragmentArticle[numFragments];
-        fragments[0] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt);
-        fragments[1] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt2);
-        fragments[2] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt3);
-        fragments[3] = (FragmentArticle)getSupportFragmentManager().findFragmentById(R.id.fgmt4);
+        for (int i = 0; i < numFragments; i++) {
+            fragments[i] = (FragmentArticle) getSupportFragmentManager().findFragmentById(R.id.fgmt + i);
+        }
         tvSourceName = findViewById(R.id.tvSourceName);
         preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
+        btnNextPage = findViewById(R.id.btnNextPage);
+        btnLastPage = findViewById(R.id.btnLastPage);
 
         boolean connected = false;
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -218,8 +221,20 @@ public class MainActivity extends AppCompatActivity {
     public void NextArticle(View v){
         NextArticle();
     }
+    public void LastArticle(View v){
+        LastArticle();
+    }
     public void NextArticle(){
-        pageIndex+=4;
+        pageIndex++;
+        RetrieveNewsStory();
+    }
+    public void LastArticle(){
+        pageIndex-=numFragments;
+        pageIndex = pageIndex>0?pageIndex:0;
+        if(pageIndex==0)
+            btnLastPage.setVisibility(View.INVISIBLE);
+        else
+            btnLastPage.setVisibility(View.VISIBLE);
         RetrieveNewsStory();
     }
 
@@ -230,17 +245,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    NewsResults results;
+    public void SetRes(NewsResults r){
+        results = r;
+    }
     public void RetrieveNewsStory() {
         final Context context = this;
         //TODO: Open a new page that contains the news story and the picture selected
         //Intent n = new Intent()
         int srcList = srcIndex % srcs.length;
             String src = srcs[srcList],
-                    newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults=3&apiKey=20691eacad374052a07ee662dd9bd63a";
+                    newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults="+numFragments+"&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
 
 //region request
             {
-
+            Log.i("Request ",newsurl);
 // Request a string response from the provided URL.
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, newsurl,
                         new Response.Listener<String>() {
@@ -249,12 +268,15 @@ public class MainActivity extends AppCompatActivity {
                                 // Display the first 500 characters of the response string.
                                 // Log.e("onResponse", response.toString());
                                 Gson g = new Gson();
-                                NewsResults results = g.fromJson(response, NewsResults.class);
+                                SetRes(g.fromJson(response, NewsResults.class));
                                 JSONArray jsonArray = new JSONArray();
                                     for(int ind = 0; ind < numFragments; ind++) {
-                                        curFrag = fragments[ind + (pageIndex % 4)];
-
-                                        int i = (pageIndex+ind) % results.articles.length;
+                                        curFrag = fragments[ind];
+                                        if(results.articles.length==0){
+                                            Log.e("FUCCCC","HI");
+                                            return;
+                                        }
+                                        int i = (ind) % results.articles.length;
 
                                         curFrag.tvFragTitle.setText("Title: " + results.articles[i].title + "\nSource: " + results.articles[i].source.name);
                                         curFrag.tvFragDescription.setText(results.articles[i].description);
@@ -333,6 +355,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(n);
     }
     public void ToSettings(View v){
+        Intent n = new Intent(this,SettingsActivity.class);
+        startActivity(n);
+    }
+    public void ToFlickrSettings(View v){
         Intent n = new Intent(this,SettingsActivity.class);
         startActivity(n);
     }

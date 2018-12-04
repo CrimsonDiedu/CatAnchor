@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvHeader" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/etEnterTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -48,6 +48,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:onClick="ClearText"
         android:text="Enter Tag"
         app:layout_constraintEnd_toStartOf="@+id/lvTags"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,6 +61,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:onClick="RemoveTag"
         android:text="Remove Tag"
         app:layout_constraintEnd_toEndOf="@+id/btnAddTag"
         app:layout_constraintHorizontal_bias="0.504"
@@ -75,9 +77,24 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:onClick="AddTag"
         android:text="Add Tag"
-        app:layout_constraintEnd_toEndOf="@+id/editText"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintEnd_toEndOf="@+id/etEnterTag"
+        app:layout_constraintStart_toStartOf="@+id/etEnterTag"
+        app:layout_constraintTop_toBottomOf="@+id/etEnterTag" />
+
+    <Button
+        android:id="@+id/SearchResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="@+id/btnRemoveTag"
+        app:layout_constraintStart_toStartOf="@+id/btnRemoveTag"
+        app:layout_constraintTop_toBottomOf="@+id/btnRemoveTag" />
 
 </android.support.constraint.ConstraintLayout>
