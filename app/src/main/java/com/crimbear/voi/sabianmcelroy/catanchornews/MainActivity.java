@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,9 +16,14 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     IVThread thread;
     CardView cvArticleLayout;
     RequestQueue requestQueue;
+    Spinner spnrSearchThrough;
     FragmentArticle curFrag;
     FragmentArticle[] fragments;
     SharedPreferences preferences;
@@ -49,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     int pageIndex,pages=0,
             imageIndex = pageIndex = 0,srcIndex = 0;
     String[] srcs = ("abc-news,mashable,bbc-news,buzzfeed,cbs-news,crypto-coins-news").split(",");
-
+    String searchEndpoint = "top-headlines";
     void InitIVThread(){
         thread = new IVThread( MainActivity.this);
         thread.start();
@@ -67,7 +74,26 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
         btnNextPage = findViewById(R.id.btnNextPage);
         btnLastPage = findViewById(R.id.btnLastPage);
+        spnrSearchThrough = findViewById(R.id.spnrSearchThrough);
 
+        String[] searchtypes = ("everything,top-headlines,").split(",");
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,searchtypes);
+
+        spnrSearchThrough.setAdapter(stringArrayAdapter);
+spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        searchEndpoint = parent.getItemAtPosition(
+                position).toString();
+        RetrieveNewsStory();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+});
         boolean connected = false;
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -250,12 +276,14 @@ public class MainActivity extends AppCompatActivity {
         results = r;
     }
     public void RetrieveNewsStory() {
+        if(false)
+            return;
         final Context context = this;
         //TODO: Open a new page that contains the news story and the picture selected
         //Intent n = new Intent()
         int srcList = srcIndex % srcs.length;
             String src = srcs[srcList],
-                    newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults="+numFragments+"&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
+                    newsurl = "https://newsapi.org/v2/"+searchEndpoint+"?sources=" + src + "&totalResults="+numFragments+"&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
 
 //region request
             {

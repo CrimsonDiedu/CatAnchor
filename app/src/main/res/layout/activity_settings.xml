@@ -92,9 +92,36 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:onClick="SeeExamples"
         android:text="Button"
         app:layout_constraintEnd_toEndOf="@+id/btnRemoveTag"
         app:layout_constraintStart_toStartOf="@+id/btnRemoveTag"
         app:layout_constraintTop_toBottomOf="@+id/btnRemoveTag" />
+
+    <ImageView
+        android:id="@+id/ivFr1"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/SearchResults"
+        app:layout_constraintStart_toStartOf="@+id/SearchResults"
+        app:layout_constraintTop_toBottomOf="@+id/SearchResults"
+        app:srcCompat="@drawable/flickr" />
+
+    <ImageView
+        android:id="@+id/ivFr2"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/SearchResults"
+        app:layout_constraintStart_toStartOf="@+id/SearchResults"
+        app:layout_constraintTop_toBottomOf="@+id/ivFr1"
+        app:srcCompat="@drawable/flickr" />
 
 </android.support.constraint.ConstraintLayout>
