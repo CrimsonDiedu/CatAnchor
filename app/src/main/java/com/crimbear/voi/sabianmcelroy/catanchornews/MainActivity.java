@@ -55,8 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
     int pageIndex,pages=0,
             imageIndex = pageIndex = 0,srcIndex = 0;
-    String[] srcs = ("abc-news,mashable,bbc-news,buzzfeed,cbs-news,crypto-coins-news").split(",");
-    String searchEndpoint = "top-headlines";
+    String[] srcs = ("abc-news,abc-news-au,aftenposten,ary-news,associated-press," +
+            "axios,bbc-news,bbc-sport,cbs,news," +
+            "crypto-coins,news,buzzfeed,cnn,daily-mail,business-insider," +
+            "bild,die-zeit,el-mundo,engadget,financial,post,fortune,fox-sports," +
+            "entertainment-weekly,four-four-two,fox-news,cnbc,hacker-news,ign,infobae," +
+            "independent,mirror,mtv-news,nbc-news,newsweek,polygon,nfl-news,politicol,reddit-r-all," +
+            "sabq,techcrunch,techradar,the-hill,the-lad-bible,mashable").split(",");
+    String source = "abc-news";
     void InitIVThread(){
         thread = new IVThread( MainActivity.this);
         thread.start();
@@ -76,14 +82,14 @@ public class MainActivity extends AppCompatActivity {
         btnLastPage = findViewById(R.id.btnLastPage);
         spnrSearchThrough = findViewById(R.id.spnrSearchThrough);
 
-        String[] searchtypes = ("everything,top-headlines,").split(",");
-        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,searchtypes);
+        //String[] searchtypes = ("everything,top-headlines,").split(",");
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,srcs);
 
         spnrSearchThrough.setAdapter(stringArrayAdapter);
 spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        searchEndpoint = parent.getItemAtPosition(
+        source = parent.getItemAtPosition(
                 position).toString();
         RetrieveNewsStory();
     }
@@ -267,7 +273,9 @@ spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListen
     public void NextSource(View v){
         pageIndex = 0;
         srcIndex++;
+        source = "";
         RetrieveNewsStory();
+
     }
 
 
@@ -282,8 +290,8 @@ spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListen
         //TODO: Open a new page that contains the news story and the picture selected
         //Intent n = new Intent()
         int srcList = srcIndex % srcs.length;
-            String src = srcs[srcList],
-                    newsurl = "https://newsapi.org/v2/"+searchEndpoint+"?sources=" + src + "&totalResults="+numFragments+"&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
+            String src = (source==""?srcs[srcList]:source),
+                    newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults="+numFragments+"&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
 
 //region request
             {
