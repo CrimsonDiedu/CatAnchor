@@ -6,63 +6,145 @@
     android:layout_height="match_parent"
     tools:context=".FlickrSettings">
 
-    <TableLayout
-        android:id="@+id/tlytPictures"
+    <TextView
+        android:id="@+id/tvHeader"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Search Tags"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13999999" />
+
+    <ListView
+        android:id="@+id/lvTags"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnExampleResults">
+        app:layout_constraintEnd_toEndOf="@+id/tvHeader"
+        app:layout_constraintStart_toStartOf="@+id/tvHeader"
+        app:layout_constraintTop_toBottomOf="@+id/tvHeader" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
-
-    <Button
-        android:id="@+id/btnExampleResults"
+    <EditText
+        android:id="@+id/etEnterTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:onClick="LoadImages"
-        android:text="Show \nExample Results"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:onClick="ClearText"
+        android:text="Enter Tag"
+        app:layout_constraintEnd_toStartOf="@+id/lvTags"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/svSearchTag" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <SearchView
-        android:id="@+id/svSearchTag"
-        android:layout_width="0dp"
+    <Button
+        android:id="@+id/btnRemoveTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="RemoveTag"
+        android:text="Remove Tag"
+        app:layout_constraintEnd_toEndOf="@+id/btnAddTag"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="@+id/btnAddTag"
+        app:layout_constraintTop_toBottomOf="@+id/btnAddTag" />
+
+    <Button
+        android:id="@+id/btnAddTag"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="AddTag"
+        android:text="Add Tag"
+        app:layout_constraintEnd_toEndOf="@+id/etEnterTag"
+        app:layout_constraintStart_toStartOf="@+id/etEnterTag"
+        app:layout_constraintTop_toBottomOf="@+id/etEnterTag" />
+
+    <Button
+        android:id="@+id/searchResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="SeeExamples"
+        android:text="Preview Potential Results"
+        app:layout_constraintEnd_toEndOf="@+id/btnRemoveTag"
+        app:layout_constraintStart_toStartOf="@+id/btnRemoveTag"
+        app:layout_constraintTop_toBottomOf="@+id/btnRemoveTag" />
+
+    <ImageView
+        android:id="@+id/ivFr"
+        android:layout_width="130dp"
+        android:layout_height="128dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/SearchResults"
+        app:srcCompat="@drawable/flickr" />
+
+    <ImageView
+        android:id="@+id/ivFr2"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivFr1"
+        app:layout_constraintStart_toEndOf="@+id/ivFr1"
+        app:layout_constraintTop_toTopOf="@+id/ivFr1"
+        app:srcCompat="@drawable/flickr" />
+
+    <ImageView
+        android:id="@+id/ivFr3"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivFr1"
+        app:srcCompat="@drawable/flickr" />
+
+    <ImageView
+        android:id="@+id/ivFr4"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivFr3"
+        app:layout_constraintStart_toEndOf="@+id/ivFr3"
+        app:layout_constraintTop_toTopOf="@+id/ivFr3"
+        app:srcCompat="@drawable/flickr" />
 </android.support.constraint.ConstraintLayout>

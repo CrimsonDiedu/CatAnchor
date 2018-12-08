@@ -42,26 +42,18 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity {
     int numFragments = 10;
     TextView tvSourceName;
-    EditText etSearchTag;
     ImageView ivPicture;
-    CardView cvArticleLayout;
     RequestQueue requestQueue;
     Spinner spnrSearchThrough;
     FragmentArticle curFrag;
     FragmentArticle[] fragments;
     SharedPreferences preferences;
     Button btnNextPage,btnLastPage;
-
+    SourceList sourceList;
     int pageIndex,pages=0,
             imageIndex = pageIndex = 0,srcIndex = 0;
-    String[] srcs = ("abc-news,abc-news-au,aftenposten,ary-news,associated-press," +
-            "axios,bbc-news,bbc-sport,cbs,news," +
-            "crypto-coins,news,buzzfeed,cnn,daily-mail,business-insider," +
-            "bild,die-zeit,el-mundo,engadget,financial,post,fortune,fox-sports," +
-            "entertainment-weekly,four-four-two,fox-news,cnbc,hacker-news,ign,infobae," +
-            "independent,mirror,mtv-news,nbc-news,newsweek,polygon,nfl-news,politicol,reddit-r-all," +
-            "sabq,techcrunch,techradar,the-hill,the-lad-bible,mashable").split(",");
-    String source;
+    String[] srcs,srcUrls;
+    String source,query = "";
 
 
     @Override
@@ -82,26 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         source = preferences.getString("LastUsedSource","abc-news");
 
-        //String[] searchtypes = ("everything,top-headlines,").split(",");
-        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,srcs);
 
-        spnrSearchThrough.setAdapter(stringArrayAdapter);
-        spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                source = parent.getItemAtPosition(
-                        position).toString();
-                preferences.edit().putString("LastUsedSource",source).apply();
-                RetrieveNewsStory();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-
-        });
         boolean connected = false;
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -166,8 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
             //endregion
 
-
-            RetrieveNewsStory();
+            RetrieveSources();
 
         }
         else{
@@ -177,10 +149,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void RetrieveApiSources(){
-        String url = "https://newsapi.org/v2/top-headlines?";
-        //StringRequest request = new StringRequest(Request.Method.GET,url,);
-    }
     public void CatPicture(View v) {
         Drawable drawable;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -280,6 +248,57 @@ public class MainActivity extends AppCompatActivity {
         RetrieveNewsStory();
 
     }
+    void RetrieveSources(){
+        String url = "https://newsapi.org/v2/sources?"+(query==""?"":"q="+query)+"&apiKey=20691eacad374052a07ee662dd9bd63a";
+        final Context context = this;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,url,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Gson gson = new Gson();
+                sourceList = gson.fromJson(response,SourceList.class);
+
+                String language = preferences.getString("Language",""),country = preferences.getString("Country","");
+                sourceList.GetSourcesLanguageCountry(language,country);
+
+                int len = sourceList.sources.length;
+                srcs = new String[len];
+                srcUrls = new String[len];
+
+                for(int i = 0; i < len;i++) {
+                    srcs[i] = sourceList.GetSourceAt(i).name;
+                    srcUrls[i] = sourceList.GetSourceAt(i).id;
+                }
+
+                ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,srcs);
+
+                spnrSearchThrough.setAdapter(stringArrayAdapter);
+                spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                        source = srcUrls[position];
+                        preferences.edit().putString("LastUsedSource",srcUrls[position]).apply();
+                        RetrieveNewsStory();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+
+                });
+
+                RetrieveNewsStory();
+            }
+        },new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse ", "That didn't work!");
+            }
+        }
+        );
+        requestQueue.add(stringRequest);
+    }
 
 
     NewsResults results;
@@ -292,8 +311,8 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
         //TODO: Open a new page that contains the news story and the picture selected
         //Intent n = new Intent()
-        int srcList = srcIndex % srcs.length;
-            String src = (source==""?srcs[srcList]:source),
+        int srcList = srcIndex % srcUrls.length;
+            String src = (source==""?srcUrls[srcList]:source),
                     newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults="+numFragments+"&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
 
 //region request
@@ -317,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         int i = (ind) % results.articles.length;
 
-                                        curFrag.tvFragTitle.setText("Title: " + results.articles[i].title + "\nSource: " + results.articles[i].source.name);
+                                        curFrag.tvFragTitle.setText("Title: " + results.articles[i].title );
                                         curFrag.tvFragDescription.setText(results.articles[i].description);
                                         curFrag.article = results.articles[i];
                                         tvSourceName.setText("Source: "+results.articles[i].source.name);
@@ -370,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(n);
     }
     public void ToFlickrSettings(View v){
-        Intent n = new Intent(this,SettingsActivity.class);
+        Intent n = new Intent(this,FlickrSettings.class);
         startActivity(n);
     }
 }
