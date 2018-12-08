@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 

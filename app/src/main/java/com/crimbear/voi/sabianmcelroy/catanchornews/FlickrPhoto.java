@@ -1,12 +1,7 @@
 package com.crimbear.voi.sabianmcelroy.catanchornews;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.widget.ImageView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

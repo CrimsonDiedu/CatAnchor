@@ -1,29 +1,21 @@
 package com.crimbear.voi.sabianmcelroy.catanchornews;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.DataSetObserver;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -37,7 +29,6 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
-import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     int numFragments = 10;
