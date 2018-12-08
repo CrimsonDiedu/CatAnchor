@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     TextView tvSourceName;
     EditText etSearchTag;
     ImageView ivPicture;
-    IVThread thread;
     CardView cvArticleLayout;
     RequestQueue requestQueue;
     Spinner spnrSearchThrough;
@@ -62,16 +61,15 @@ public class MainActivity extends AppCompatActivity {
             "entertainment-weekly,four-four-two,fox-news,cnbc,hacker-news,ign,infobae," +
             "independent,mirror,mtv-news,nbc-news,newsweek,polygon,nfl-news,politicol,reddit-r-all," +
             "sabq,techcrunch,techradar,the-hill,the-lad-bible,mashable").split(",");
-    String source = "abc-news";
-    void InitIVThread(){
-        thread = new IVThread( MainActivity.this);
-        thread.start();
-    }
+    String source;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         fragments = new FragmentArticle[numFragments];
         for (int i = 0; i < numFragments; i++) {
             fragments[i] = (FragmentArticle) getSupportFragmentManager().findFragmentById(R.id.fgmt + i);
@@ -82,24 +80,28 @@ public class MainActivity extends AppCompatActivity {
         btnLastPage = findViewById(R.id.btnLastPage);
         spnrSearchThrough = findViewById(R.id.spnrSearchThrough);
 
+        source = preferences.getString("LastUsedSource","abc-news");
+
         //String[] searchtypes = ("everything,top-headlines,").split(",");
         ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,srcs);
 
         spnrSearchThrough.setAdapter(stringArrayAdapter);
-spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        source = parent.getItemAtPosition(
-                position).toString();
-        RetrieveNewsStory();
-    }
+        spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+                source = parent.getItemAtPosition(
+                        position).toString();
+                preferences.edit().putString("LastUsedSource",source).apply();
+                RetrieveNewsStory();
+            }
 
-    }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-});
+            }
+
+        });
         boolean connected = false;
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -175,6 +177,10 @@ spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListen
         }
     }
 
+    public void RetrieveApiSources(){
+        String url = "https://newsapi.org/v2/top-headlines?";
+        //StringRequest request = new StringRequest(Request.Method.GET,url,);
+    }
     public void CatPicture(View v) {
         Drawable drawable;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -232,9 +238,6 @@ spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListen
                        int farm_id, int server_id, int photo_id)
                                      */
                             Log.e("Image URL",flickrPhoto.url);
-                            //InitIVThread();
-                            thread.path = flickrPhoto.url;
-                            thread.photoRef = flickrPhoto;
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -357,34 +360,6 @@ spnrSearchThrough.setOnItemSelectedListener(new AdapterView.OnItemSelectedListen
                 });
     }
 
-    public void OnImageFound() throws InterruptedException {
-        Log.e("Merging threads","....");
-        InputStream is = thread.is;
-
-
-        if(is == null)return;
-        //Log.e("ImageSetStr",is.toString());
-        Drawable drawable = Drawable.createFromStream(is,null);
-        if(thread.path != null)
-        return;
-        ivPicture.setImageDrawable(drawable);
-        if(drawable != null&& thread.path==null) {
-
-            BitmapDrawable bmpD = (BitmapDrawable)drawable;
-
-
-            int pixWidth=this.getWindowManager().getDefaultDisplay().getWidth(),pixHeight=this.getWindowManager().getDefaultDisplay().getWidth();
-            int dpw = pixWidth/(int)getResources().getDisplayMetrics().density , dph=pixHeight/(int)getResources().getDisplayMetrics().density ;
-
-            Bitmap resized = Bitmap.createScaledBitmap(bmpD.getBitmap(), pixWidth, pixHeight, true);
-
-
-            //ivPicture.setImageDrawable(bmpD);
-            ivPicture.setImageBitmap(resized);
-
-            Log.e("ImageSet", "T");
-        }
-    }
 
     public void ToArticle(View v){
         Intent n = new Intent(this,ViewArticleActivity.class);

@@ -11,7 +11,10 @@ public class FlickrResults {
 
     public Photos.Photo getPhoto(int i){
         Log.e("JIf",photos.photo.length+"");
-
+        if(i > photos.photo.length)
+            i = 0;
+        else if (i < 0)
+            i = photos.photo.length-1;
         return photos.photo[i];
     }
 
