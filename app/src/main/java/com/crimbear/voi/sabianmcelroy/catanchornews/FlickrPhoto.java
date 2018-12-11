@@ -42,6 +42,7 @@ public class FlickrPhoto{
         url = "https://farm"+farm_id+".staticflickr.com/"+server_id+'/'+photo_id+'_'+secret+".jpg";
     }
 
+
     public InputStream LoadImageFromWebOperations() {
         return LoadStaticImageFromWebOperations(url);
     }

@@ -3,9 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorMonoPrimary">#7F5447</color>
-    <color name="colorMonoDetail">#CC5330</color>
-    <color name="colorMonoDetailAlt">#FF683C</color>
-    <color name="colorMonoDark">#7F341E</color>
-    <color name="colorMonoLight">#FFD6CA</color>
+
+    <color name="colorMonoPrimary">#67A2E8</color>
+    <color name="colorMonoDetail">#7EEAFF</color>
+    <color name="colorMonoDetailAlt">#A3E8D8</color>
+    <color name="colorMonoDark">#4A58FF</color>
+    <color name="colorMonoLight">#D5FFE4</color>
 </resources>

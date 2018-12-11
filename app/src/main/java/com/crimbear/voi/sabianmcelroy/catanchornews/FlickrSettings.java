@@ -31,12 +31,11 @@ public class FlickrSettings extends AppCompatActivity {
     String[] tags;
     RequestQueue requestQueue;
     ImageView[] ivs;
-    int numPhotos = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestQueue = Volley.newRequestQueue(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_flickr_settings);
         preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
 
         lvTags = findViewById(R.id.lvTags);
@@ -50,9 +49,6 @@ public class FlickrSettings extends AppCompatActivity {
                 etEnterTag.setText(selectedFromList);
             }
         });
-        ivs = new ImageView[numPhotos];
-        for(int i = 0; i < numPhotos; i++)
-            ivs[i] = findViewById(R.id.ivFr1+i);
 
         random = new Random();
     }
@@ -114,14 +110,7 @@ public class FlickrSettings extends AppCompatActivity {
 
                         FlickrResults results = g.fromJson(response,FlickrResults.class);
                         //tvHelloWorld.setText(response);
-                        for(int j = 0; j < numPhotos; j++) {
-                            int i = j%results.photos.photo.length;
-                            FlickrResults.Photos.Photo photo = results.getPhoto((j+rint)%results.photos.photo.length);
-                            //Log.e("Image Index",i+"");
-                            FlickrPhoto flickrPhoto = new FlickrPhoto(photo.secret, 'm', photo.farm, photo.server, photo.id);
-                            if(i < ivs.length)
-                                Picasso.with(getBaseContext()).load(flickrPhoto.url).into(ivs[i]);
-                        }
+
 
                     }
                 }, new Response.ErrorListener() {

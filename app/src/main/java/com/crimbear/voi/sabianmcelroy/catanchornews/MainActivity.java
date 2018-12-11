@@ -41,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences preferences;
     Button btnNextPage,btnLastPage;
     SourceList sourceList;
-    int pageIndex,pages=0,
-            imageIndex = pageIndex = 0,srcIndex = 0;
+    int pages=0, imageIndex =0, pageIndex = 1,srcIndex = 0;
     String[] srcs,srcUrls;
     String source,query = "";
 
@@ -59,8 +58,10 @@ public class MainActivity extends AppCompatActivity {
         }
         tvSourceName = findViewById(R.id.tvSourceName);
         preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
+
         btnNextPage = findViewById(R.id.btnNextPage);
         btnLastPage = findViewById(R.id.btnLastPage);
+
         spnrSearchThrough = findViewById(R.id.spnrSearchThrough);
 
         source = preferences.getString("LastUsedSource","abc-news");
@@ -78,57 +79,7 @@ public class MainActivity extends AppCompatActivity {
             final Context context = this;
             String flickrURL = "https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg";//"https://api.flickr.com/services/rest/?method=flickr.test.echo&name=value";
             requestQueue = Volley.newRequestQueue(this);
-//region no
-        /*
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-            Request.Method.GET,
-            flickrURL,
-            null,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.e("REST RESPONSE ",response.toString());
-                }
-            },
-            new Response.ErrorListener()
-            {
-                @Override
-                public void onErrorResponse(VolleyError error){
-                    Log.e("ERROR REST RESPONSE ",error.toString() );
-                }
-            }
-            );
 
-        requestQueue.add(jsonObjectRequest);
-        */
-        /*
-        String tags = "Cat", src = "associated-press",
-                url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2f0b4021021997cc3a82a0aeed6a700d&text=" + tags + "&per_page=10&format=json&nojsoncallback=1";//"http://www.google.com";
-
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        //Log.e("onResponse", response.toString());
-                        //tvHelloWorld.setText(response);
-
-                        //todo: notify main thread when branch has image
-                        InitIVThread();
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse ", "That didn't work!");
-            }
-        });
-
-// Add the request to the RequestQueue.
-        requestQueue.add(stringRequest);*/
-
-            //endregion
 
             RetrieveSources();
 
@@ -140,77 +91,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void CatPicture(View v) {
-        Drawable drawable;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            drawable = getDrawable(R.drawable.ic_launcher_background);
-        } else
-            return;
-
-        //TODO: Implement Flickr API Here
-        //final String  tags = etSearchTag.getText().toString(),
-
-        final String tags = preferences.getString("Tags","Cats"),flickrUrl = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2f0b4021021997cc3a82a0aeed6a700d&text=" + tags + "&per_page=10&page="+pages+"&format=json&nojsoncallback=1";
-        imageIndex++;
-        {
-
-//region no
-        /*
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-            Request.Method.GET,
-            flickrURL,
-            null,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.e("REST RESPONSE ",response.toString());
-                }
-            },
-            new Response.ErrorListener()
-            {
-                @Override
-                public void onErrorResponse(VolleyError error){
-                    Log.e("ERROR REST RESPONSE ",error.toString() );
-                }
-            }
-            );
-
-        requestQueue.add(jsonObjectRequest);
-        */
-            //endregion
-// Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, flickrUrl,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            // Display the first 500 characters of the response string.
-                            // Log.e("onResponse", response.toString());
-                            Gson g = new Gson();
-                            FlickrResults results = g.fromJson(response,FlickrResults.class);
-                            //tvHelloWorld.setText(response);
-                            int i = imageIndex%results.photos.photo.length;
-                            FlickrResults.Photos.Photo photo = results.getPhoto(i);
-                            //Log.e("Image Index",i+"");
-                            FlickrPhoto flickrPhoto = new FlickrPhoto(photo.secret,'m',photo.farm,photo.server, photo.id);
-                                    /*
-    public FlickrPhoto(String secret, char size,
-                       int farm_id, int server_id, int photo_id)
-                                     */
-                            Log.e("Image URL",flickrPhoto.url);
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("onErrorResponse ", "That didn't work!");
-                }
-            });
-
-// Add the request to the RequestQueue.
-            requestQueue.add(stringRequest);
-        }
-
-        ivPicture.setImageDrawable(drawable);
-    }
 
     public void NextArticle(View v){
         NextArticle();
@@ -220,12 +100,22 @@ public class MainActivity extends AppCompatActivity {
     }
     public void NextArticle(){
         pageIndex++;
+        if(pageIndex==1){
+            //on the first page, so cannot move further back, hid the previous page button
+            btnLastPage.setEnabled(false);
+            btnLastPage.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            btnLastPage.setEnabled(true);
+            btnLastPage.setVisibility(View.VISIBLE);
+        }
         RetrieveNewsStory();
     }
     public void LastArticle(){
         pageIndex-=numFragments;
-        pageIndex = pageIndex>0?pageIndex:0;
-        if(pageIndex==0)
+        pageIndex = pageIndex>1?pageIndex:1;
+        if(pageIndex==1)
             btnLastPage.setVisibility(View.INVISIBLE);
         else
             btnLastPage.setVisibility(View.VISIBLE);
@@ -233,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void NextSource(View v){
-        pageIndex = 0;
+        pageIndex = 1;
         srcIndex++;
         source = "";
         RetrieveNewsStory();
@@ -304,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         //Intent n = new Intent()
         int srcList = srcIndex % srcUrls.length;
             String src = (source==""?srcUrls[srcList]:source),
-                    newsurl = "https://newsapi.org/v2/top-headlines?sources=" + src + "&totalResults="+numFragments+"&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
+                    newsurl = "https://newsapi.org/v2/everything?sources=" + src + "&totalResults="+numFragments+"&pageSize=10&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
 
 //region request
             {

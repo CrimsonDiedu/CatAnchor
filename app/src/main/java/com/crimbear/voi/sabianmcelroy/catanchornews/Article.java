@@ -18,6 +18,21 @@ public class Article {
         this.url = url;
         this.urlToImage = urlToImage;
         this.publishedAt = publishedAt;
-        this.content = content;
+        SetContent(content);
+    }
+    void SetContent(String content){
+        String editContent = "";
+        Character c;
+        for(int i = 0; i < content.length(); i++){
+            c = content.charAt(i);
+            if(c == '[')
+                break;
+            editContent+= c;
+        }
+        if(url != null){
+            editContent+= "\nTo read more, go to "+ url;
+        }
+
+        this.content = editContent;
     }
 }

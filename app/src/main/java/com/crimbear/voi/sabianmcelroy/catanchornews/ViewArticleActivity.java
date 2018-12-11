@@ -1,11 +1,21 @@
 package com.crimbear.voi.sabianmcelroy.catanchornews;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 public class ViewArticleActivity extends AppCompatActivity {
@@ -22,8 +32,22 @@ public class ViewArticleActivity extends AppCompatActivity {
     SharedPreferences preferences;
     TextView tvContent,tvAuthor,tvTitle;
     ImageView ivArticleImage;
+    int picInd = 0;
+    boolean viewFlickrImg;
+    RequestQueue requestQueue;
     public Article getArticle() {
         return article;
+    }
+    Context context = this;
+    public void TogglePicture(View v){
+        if(viewFlickrImg) {
+            LoadFlickrImage();
+            picInd++;
+        }
+        else{
+            LoadArticleImg();
+        }
+        viewFlickrImg = !viewFlickrImg;
     }
 
     @Override
@@ -42,28 +66,64 @@ public class ViewArticleActivity extends AppCompatActivity {
         tvAuthor.setText("Article By " + article.author);
         tvTitle.setText(article.title);
         preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
-        if(preferences.getBoolean("LoadImageFromArticle",true)) {
-            Picasso.with(this)
-                    .load(article.urlToImage)
-                    .placeholder(R.drawable.rounded_button)
-                    .error(R.drawable.rounded_button)
-                    .into(ivArticleImage, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
+        viewFlickrImg = preferences.getBoolean("LoadImageFromArticle",true);
+        requestQueue = Volley.newRequestQueue(this);
 
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    }
-            );
+        if(!viewFlickrImg) {
+            LoadArticleImg();
 
         }
         else{
-
+            LoadFlickrImage();
+            picInd++;
         }
+    }
+    void LoadFlickrImage(){
+        String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2f0b4021021997cc3a82a0aeed6a700d&tags=" + preferences.getString("FlickrTags","Cat") + "&per_page=10&format=json&nojsoncallback=1";//"http://www.google.com";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        Log.e("onResponse", response.toString());
+                        //tvHelloWorld.setText(response);
+                        Gson g = new Gson();
+
+                        FlickrResults results = g.fromJson(response,FlickrResults.class);
+                        //tvHelloWorld.setText(response);
+                        FlickrResults.Photos.Photo photo = results.photos.photo[picInd];
+                        //(String secret, char size,
+                        //                       int farm_id, int server_id, String photo_id)
+                        //    {
+                        FlickrPhoto flickrPhoto = new FlickrPhoto(photo.secret,'m',photo.farm,photo.server,photo.id);
+                        Picasso.with(context).load(flickrPhoto.url).into(ivArticleImage);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse ", "That didn't work!");
+            }
+        });
+        requestQueue.add(stringRequest);
+    }
+    void LoadArticleImg(){
+        Picasso.with(this)
+                .load(article.urlToImage)
+                .placeholder(R.drawable.rounded_button)
+                .error(R.drawable.rounded_button)
+                .into(ivArticleImage, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        }
+                );
     }
 }
 
