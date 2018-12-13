@@ -66,7 +66,7 @@ public class ViewArticleActivity extends AppCompatActivity {
         tvAuthor.setText("Article By " + article.author);
         tvTitle.setText(article.title);
         preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
-        viewFlickrImg = preferences.getBoolean("LoadImageFromArticle",true);
+        viewFlickrImg = preferences.getBoolean("LoadImageFromArticle",false);
         requestQueue = Volley.newRequestQueue(this);
 
         if(!viewFlickrImg) {

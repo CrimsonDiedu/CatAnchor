@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences preferences;
     Button btnNextPage,btnLastPage;
     SourceList sourceList;
+    SearchView sbArticles;
     int pages=0, imageIndex =0, pageIndex = 1,srcIndex = 0;
     String[] srcs,srcUrls;
     String source,query = "";
@@ -61,9 +63,24 @@ public class MainActivity extends AppCompatActivity {
 
         btnNextPage = findViewById(R.id.btnNextPage);
         btnLastPage = findViewById(R.id.btnLastPage);
-
+        sbArticles = findViewById(R.id.sbArticles);
         spnrSearchThrough = findViewById(R.id.spnrSearchThrough);
 
+        sbArticles.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                spnrSearchThrough.setEnabled(true);
+                spnrSearchThrough.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+        sbArticles.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                spnrSearchThrough.setEnabled(false);
+                spnrSearchThrough.setVisibility(View.INVISIBLE);
+            }
+        });
         source = preferences.getString("LastUsedSource","abc-news");
 
 
@@ -89,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
             System.exit(0);
         }
+
     }
 
 
@@ -130,24 +148,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
     void RetrieveSources(){
+        Log.e("Info","Started retrieving sources");
         String url = "https://newsapi.org/v2/sources?"+(query==""?"":"q="+query)+"&apiKey=20691eacad374052a07ee662dd9bd63a";
         final Context context = this;
         StringRequest stringRequest = new StringRequest(Request.Method.GET,url,new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+
+                Log.e("Info","Response collected");
                 Gson gson = new Gson();
                 sourceList = gson.fromJson(response,SourceList.class);
 
                 String language = preferences.getString("Language",""),country = preferences.getString("Country","");
                 sourceList.GetSourcesLanguageCountry(language,country);
 
-                int len = sourceList.sources.length;
+                int sourclen=sourceList.sources.length,len = (sourclen>numFragments)?numFragments:sourclen;
                 srcs = new String[len];
                 srcUrls = new String[len];
 
                 for(int i = 0; i < len;i++) {
                     srcs[i] = sourceList.GetSourceAt(i).name;
                     srcUrls[i] = sourceList.GetSourceAt(i).id;
+                    Log.e("Info","Started retrieve source "+i);
                 }
 
                 ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,srcs);
@@ -160,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                         source = srcUrls[position];
                         preferences.edit().putString("LastUsedSource",srcUrls[position]).apply();
                         RetrieveNewsStory();
+                        Log.e("Info","Started retrieving sources");
                     }
 
                     @Override
@@ -174,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         },new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse ", "That didn't work!");
+                Log.e("RetrieveSourcesError", "Failure in RetrieveSources");
             }
         }
         );
@@ -216,12 +239,11 @@ public class MainActivity extends AppCompatActivity {
                                             return;
                                         }
                                         int i = (ind) % results.articles.length;
+                                        curFrag.Setup(results.articles[i]);
 
-                                        curFrag.tvFragTitle.setText("Title: " + results.articles[i].title );
-                                        curFrag.tvFragDescription.setText(results.articles[i].description);
-                                        curFrag.article = results.articles[i];
                                         tvSourceName.setText("Source: "+results.articles[i].source.name);
                                         LoadImageFromURL(results.articles[i].urlToImage, curFrag.ivFragImage);
+
                                         //Log.e("Original Image", results.articles[i].urlToImage + " ");
                                         Log.e("Article Page", results.articles[i].url + "\n");
 
@@ -230,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("onErrorResponse ", "That didn't work!");
+                        Log.e("RetrieveNewsStoryError ", "That didn't work!");
                     }
                 });
 
