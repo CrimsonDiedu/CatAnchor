@@ -158,167 +158,10 @@
                             android:text="Go to last page"
                             android:visibility="invisible" />
 
-                        <fragment
-                            android:id="@+id/fgmt"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt2"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt3"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rvArticles"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt4"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt5"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt6"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt7"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt8"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt9"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
-
-                        <fragment
-                            android:id="@+id/fgmt10"
-                            android:name="com.crimbear.voi.sabianmcelroy.catanchornews.FragmentArticle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:layout_marginEnd="32dp"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginTop="32dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout="@layout/fragment_article" />
+                            android:layout_height="match_parent" />
 
                         <Button
                             android:id="@+id/btnNextPage"
@@ -326,6 +169,7 @@
                             android:layout_height="wrap_content"
                             android:onClick="NextArticle"
                             android:text="Load More Articles." />
+
                     </LinearLayout>
                 </ScrollView>
 

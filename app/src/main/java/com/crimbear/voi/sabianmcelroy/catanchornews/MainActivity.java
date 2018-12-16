@@ -3,13 +3,15 @@ package com.crimbear.voi.sabianmcelroy.catanchornews;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,15 +31,15 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
-    int numFragments = 10;
+    int numFragments = 100;
     TextView tvSourceName;
-    ImageView ivPicture;
     RequestQueue requestQueue;
     Spinner spnrSearchThrough;
-    FragmentArticle curFrag;
+    Article curFrag;
     FragmentArticle[] fragments;
     SharedPreferences preferences;
     Button btnNextPage,btnLastPage;
@@ -46,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
     int pages=0, imageIndex =0, pageIndex = 1,srcIndex = 0;
     String[] srcs,srcUrls;
     String source,query = "";
+
+    RecyclerView rvArticles;
+
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
@@ -56,13 +63,14 @@ public class MainActivity extends AppCompatActivity {
 
         fragments = new FragmentArticle[numFragments];
         for (int i = 0; i < numFragments; i++) {
-            fragments[i] = (FragmentArticle) getSupportFragmentManager().findFragmentById(R.id.fgmt + i);
+            //fragments[i] = (FragmentArticle) getSupportFragmentManager().findFragmentById(R.id.fgmt + i);
         }
         tvSourceName = findViewById(R.id.tvSourceName);
         preferences = getSharedPreferences("SharedProperties",MODE_PRIVATE);
 
         btnNextPage = findViewById(R.id.btnNextPage);
         btnLastPage = findViewById(R.id.btnLastPage);
+        rvArticles = findViewById(R.id.rvArticles);
         sbArticles = findViewById(R.id.sbArticles);
         spnrSearchThrough = findViewById(R.id.spnrSearchThrough);
 
@@ -91,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             //we are connected to a network
             connected = true;
         }
+
         if(connected)
         {
             final Context context = this;
@@ -106,7 +115,12 @@ public class MainActivity extends AppCompatActivity {
             finish();
             System.exit(0);
         }
+        mLayoutManager = new LinearLayoutManager(this);
+        rvArticles.setLayoutManager(mLayoutManager);
 
+        mAdapter = new ArticleRecycleAdapter(new ArrayList<Article>()
+                ,this);
+        rvArticles.setAdapter(mAdapter);
     }
 
 
@@ -151,14 +165,12 @@ public class MainActivity extends AppCompatActivity {
         Log.e("Info","Started retrieving sources");
         String url = "https://newsapi.org/v2/sources?"+(query==""?"":"q="+query)+"&apiKey=20691eacad374052a07ee662dd9bd63a";
         final Context context = this;
+        ///todo
         StringRequest stringRequest = new StringRequest(Request.Method.GET,url,new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
-                Log.e("Info","Response collected");
                 Gson gson = new Gson();
                 sourceList = gson.fromJson(response,SourceList.class);
-
                 String language = preferences.getString("Language",""),country = preferences.getString("Country","");
                 sourceList.GetSourcesLanguageCountry(language,country);
 
@@ -169,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
                 for(int i = 0; i < len;i++) {
                     srcs[i] = sourceList.GetSourceAt(i).name;
                     srcUrls[i] = sourceList.GetSourceAt(i).id;
-                    Log.e("Info","Started retrieve source "+i);
                 }
 
                 ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,srcs);
@@ -210,46 +221,56 @@ public class MainActivity extends AppCompatActivity {
         results = r;
     }
     public void RetrieveNewsStory() {
-        if(false)
-            return;
+
         final Context context = this;
         //TODO: Open a new page that contains the news story and the picture selected
         //Intent n = new Intent()
         int srcList = srcIndex % srcUrls.length;
             String src = (source==""?srcUrls[srcList]:source),
-                    newsurl = "https://newsapi.org/v2/everything?sources=" + src + "&totalResults="+numFragments+"&pageSize=10&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
+                    newsurl = "https://newsapi.org/v2/everything?sources=" + src + "&totalResults="+numFragments+"&pageSize=100&page="+pageIndex+"&apiKey=20691eacad374052a07ee662dd9bd63a";
 
 //region request
             {
-            Log.i("Request ",newsurl);
+
 // Request a string response from the provided URL.
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, newsurl,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // Display the first 500 characters of the response string.
-                                // Log.e("onResponse", response.toString());
-                                Gson g = new Gson();
-                                SetRes(g.fromJson(response, NewsResults.class));
-                                JSONArray jsonArray = new JSONArray();
-                                    for(int ind = 0; ind < numFragments; ind++) {
-                                        curFrag = fragments[ind];
-                                        if(results.articles.length==0){
-                                            Log.e("FUCCCC","HI");
-                                            return;
-                                        }
-                                        int i = (ind) % results.articles.length;
-                                        curFrag.Setup(results.articles[i]);
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            rvArticles.setAdapter(mAdapter);
+                            ArrayList<Article> articleList = new ArrayList<>();
 
-                                        tvSourceName.setText("Source: "+results.articles[i].source.name);
-                                        LoadImageFromURL(results.articles[i].urlToImage, curFrag.ivFragImage);
+                            // Display the first 500 characters of the response string.
+                            // Log.e("onResponse", response.toString());
+                            Gson g = new Gson();
+                            SetRes(g.fromJson(response, NewsResults.class));
 
-                                        //Log.e("Original Image", results.articles[i].urlToImage + " ");
-                                        Log.e("Article Page", results.articles[i].url + "\n");
-
+                            for(int ind = 0; ind < numFragments; ind++) {
+                                if(results.articles.length==0){
+                                    return;
                                 }
+                                int i = (ind) % results.articles.length;
+                                articleList.add(results.articles[i]);
+
+                                /*
+                                tvSourceName.setText("Source: "+results.articles[i].source.name);
+                                LoadImageFromURL(results.articles[i].urlToImage, curFrag.ivFragImage);
+
+                                //Log.e("Original Image", results.articles[i].urlToImage + " ");
+                                Log.e("Article Page", results.articles[i].url + "\n");
+                                */
+
+
+
+
                             }
-                        }, new Response.ErrorListener() {
+                            mLayoutManager = new LinearLayoutManager(context);
+                            mAdapter = new ArticleRecycleAdapter(articleList
+                                    ,context);
+                            rvArticles.setAdapter(mAdapter);
+                            rvArticles.setLayoutManager(mLayoutManager);
+                        }
+                    }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("RetrieveNewsStoryError ", "That didn't work!");
